@@ -1,0 +1,30 @@
+# Prompts
+
+Prompts you paste into Claude Code. Your agent builds the thing.
+
+These are the actual builds I run every day, written up as prompts your own agent can follow. Every one of them carries the hard-won lessons from my real build, so your agent gets it right the first time instead of losing the same evenings I lost. Free, no email, no catch.
+
+The pretty version with copy buttons lives at [jaredrhod.com/prompts](https://jaredrhod.com/prompts). This repo is the same content in raw markdown, plus the license.
+
+## How to use
+
+1. Open Claude Code on a Mac.
+2. Copy the whole prompt file and paste it in.
+3. Let it build. Your agent installs what it needs, writes the code, and verifies it works before handing it to you.
+
+## The prompts
+
+- **[The Voice Line](voice-line-prompt.md):** hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
+- **[The Visualizer](visualizer-prompt.md):** Matrix-style digital rain that idles like a screensaver until your voice agent speaks, then a face surfaces inside the falling code and breathes with the live voice. Pairs with The Voice Line out of the box (they share a signal-bus contract), but it ships with its own test driver so you can build it standalone.
+
+Build both and you get the full pairing: hold the key, talk, and the face surfaces in the rain while your agent answers.
+
+## Support
+
+Free to use, and always will be. If this helped you out, you can buy me a coffee:
+
+[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/jaredrhod)
+
+## License
+
+[CC BY-NC-SA 4.0](LICENSE): free to use, share, and build on with credit. Not for resale.
