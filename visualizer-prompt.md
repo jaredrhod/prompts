@@ -1,23 +1,30 @@
-# The Visualizer (Face in the Code)
+# The Visualizer
 
-Paste this whole prompt into Claude Code on a Mac. Your agent builds a Matrix-style digital-rain visual that idles like a screensaver until your voice agent speaks, then a face surfaces inside the falling code and breathes with the live voice. Built to pair with The Voice Line prompt, but it ships with its own test driver so you can build and enjoy it standalone.
+Paste this whole prompt into Claude Code on a Mac. Your agent builds a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: mine is Matrix-style digital rain where a face surfaces inside the falling code, but the same engine can drive anything you can describe. Built to pair with The Voice Line prompt, and it ships with its own test driver so you can build and enjoy it standalone.
 
 ---
 
-I want you to build me a stream visualizer. Matrix-style digital rain that reacts to a voice assistant through a small file-based signal bus. Build it exactly to this spec. It is a proven design.
+I want you to build me a stream visualizer: a fullscreen visual that reacts to a voice assistant through a small file-based signal bus. The engine spec below is proven. The scene that runs on it is mine to choose.
 
-## The look
+## The scene is my choice. Ask me first.
 
-A fullscreen field of falling glyphs, phosphor green on near-black, like the film: bright glyph at the head of each column, fading trail behind it. It idles like a screensaver. When the voice speaks, a face surfaces INSIDE the code: the glyphs themselves brighten through a portrait's luminance mask, so the face is made of code, not layered on top of it. The face breathes with the live voice envelope and dissolves back into rain when the voice stops.
+Before you design or write anything, ask me what I want on screen. Give me a few examples to spark ideas: Matrix-style digital rain where a face surfaces inside the code when the voice speaks, a truck dashboard where a CB radio needle dances with the voice, a starfield that warps to light speed while it thinks, a neon city skyline that pulses like an equalizer, a fireplace that flares as it talks. Anything I can describe, you can build with this engine.
+
+Once I pick, propose how MY scene will express each of the five states below, and get my OK on the design before you write code.
+
+## The five states (design these around my scene)
+
+- **idle** the scene at rest, like a screensaver. Alive but calm, something I can leave on screen all day.
+- **listening** a clearly visible "I hear you" element, driven by MY live mic level (open the mic locally in the visualizer for this, the bus does not carry input audio).
+- **thinking** the scene visibly working: more speed, more energy, a burst of activity, plus some kind of processing indicator that fits the theme.
+- **speaking** the centerpiece. The scene's main element comes alive and moves with the live voice envelope, so the visual breathes with every word. This is the star of the show, make it unmistakable.
+- **alert** an unmistakable emergency treatment (a red bleed, a warning flare, whatever fits the scene), for anything else on the machine that wants attention.
 
 ## Project layout
 
-Create the project at `~/voice-visualizer/` with a uv-managed Python 3.12 environment. One main file `visualizer.py` (pygame, 60fps), an `assets/` folder, and `tools/test-drive.py`.
+Create the project at `~/voice-visualizer/` with a uv-managed Python 3.12 environment. One main file `visualizer.py` (pygame, 60fps), an `assets/` folder for whatever the scene needs, and `tools/test-drive.py`.
 
-Assets:
-- `assets/face.png` a grayscale portrait on a black background. The loader must crop to content and normalize, so ANY portrait works: swap the file, restart, new face. If I do not provide one, generate a placeholder and tell me how to swap it.
-- `assets/VT323-Regular.ttf` (free on Google Fonts) for UI lettering and the boot intro.
-- Rain glyphs come from a system font with katakana coverage (Arial Unicode on macOS), and mirror the glyphs horizontally like the film.
+If my scene uses a portrait or image (like my face-in-the-code), the loader must crop to content and normalize so ANY swapped image works. If I do not provide assets, generate placeholders and tell me how to swap them.
 
 ## The signal bus (the contract)
 
@@ -29,20 +36,12 @@ Watch these files in the voice project folder at `~/voice-line/` (make the path 
 
 CRITICAL stomp-tolerance rule: a live waveform means the voice is speaking, no matter what the state file says. Trust the waveform over the state. This protects the show from any stray process overwriting the state file mid-speech.
 
-## The states
-
-- **idle** the rain falls at its screensaver pace.
-- **listening** an amber ribbon renders along the bottom, driven by MY live mic level (open the mic locally in the visualizer for this, the bus does not carry input audio).
-- **thinking** the rain accelerates to about 2.6x, occasional glitch bursts tear across columns, and a PROCESSING label descrambles character by character in the corner.
-- **speaking** the face surfaces. Map the portrait's luminance onto a glyph grid noticeably FINER than the rain grid, that contrast is the whole look. Modulate face brightness with the voice envelope so it breathes as it talks. Dissolve in over a few hundred ms, dissolve back to rain when speech ends.
-- **alert** the code bleeds red with a dark vignette, for anything else on the machine that wants attention.
-
 ## Details that make it feel right
 
-- A short boot intro on launch: a few typed-out terminal lines in VT323, any key skips it.
+- A short boot intro on launch that fits the theme (mine types out terminal lines), any key skips it.
 - Keys: F toggles fullscreen, ESC or Q quits.
 - A tiny state tag in a corner so I always know what state it thinks it is in.
-- Prerender glyph surfaces at a handful of brightness levels and cache them. Never render fonts per frame, that is the difference between 60fps and a slideshow.
+- Prerender and cache anything expensive (glyph surfaces, sprites, gradients). Never render fonts or rebuild big assets per frame, that is the difference between 60fps and a slideshow.
 - A dev hook: if a screenshots env var is set, save a frame every ~3 seconds so you can verify your own work without a window manager.
 
 ## The test driver
@@ -52,7 +51,7 @@ CRITICAL stomp-tolerance rule: a live waveform means the voice is speaking, no m
 ## Verify before you call it done
 
 1. Launch the visualizer and the test driver together and watch it walk through all five states.
-2. The face is clearly recognizable during speaking and clearly gone during idle.
+2. The speaking centerpiece clearly reacts to the voice envelope and is clearly gone during idle.
 3. Fullscreen holds 60fps.
 4. Kill the test driver mid-speaking and confirm the visualizer recovers to idle on its own within a second (the staleness rule).
 
