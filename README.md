@@ -15,9 +15,9 @@ The pretty version with copy buttons lives at [jaredrhod.com/prompts](https://ja
 ## The prompts
 
 - **[The Voice Line](voice-line-prompt.md):** hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
-- **[The Visualizer](visualizer-prompt.md):** Matrix-style digital rain that idles like a screensaver until your voice agent speaks, then a face surfaces inside the falling code and breathes with the live voice. Pairs with The Voice Line out of the box (they share a signal-bus contract), but it ships with its own test driver so you can build it standalone.
+- **[The Visualizer](visualizer-prompt.md):** a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: your agent asks what you want on screen before it builds anything (mine is Matrix-style digital rain where a face surfaces inside the falling code and breathes with the live voice). Pairs with The Voice Line out of the box (they share a signal-bus contract), but it ships with its own test driver so you can build it standalone.
 
-Build both and you get the full pairing: hold the key, talk, and the face surfaces in the rain while your agent answers.
+Build both and you get the full pairing: hold the key, talk, and your scene comes alive while your agent answers.
 
 ## Support
 
