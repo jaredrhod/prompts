@@ -1,14 +1,16 @@
 # The Voice Line
 
-Paste this whole prompt into Claude Code on a Mac. Your agent builds a voice conversation system: hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Type instead whenever you want, same conversation. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
+Paste this whole prompt into Claude Code. Your agent builds a voice conversation system: hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Type instead whenever you want, same conversation. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
 
 ---
 
 I want you to build me a voice conversation system for talking to you out loud at my desk. Build it exactly to this spec. It is a proven design, so where this spec is specific, follow it precisely. The gotchas listed at the bottom are hard-won lessons. Read them before writing any code.
 
+I might be on macOS, Windows, or Linux. This spec was proven on a Mac, so a few notes are macOS-flavored: translate anything platform-specific (permissions, launchers, audio plumbing) to MY system and keep the architecture identical.
+
 ## What it does
 
-I hold a key anywhere in macOS, my mic opens, I talk. I release the key, and what I said gets transcribed locally, sent to a live Claude Code session (you, with all your tools and my project context), and your reply is spoken through my speakers in a natural voice, sentence by sentence as you generate it. First audio should land about 1 to 2 seconds after I release the key on warm turns.
+I hold a key anywhere in my OS, my mic opens, I talk. I release the key, and what I said gets transcribed locally, sent to a live Claude Code session (you, with all your tools and my project context), and your reply is spoken through my speakers in a natural voice, sentence by sentence as you generate it. First audio should land about 1 to 2 seconds after I release the key on warm turns.
 
 ## Architecture (half-duplex)
 
@@ -41,17 +43,17 @@ Python packages: sounddevice, webrtcvad, numpy, pynput, claude-agent-sdk, httpx.
 
 Two local servers must exist. Check for them and set them up if missing:
 
-1. A whisper.cpp server on port 2022 exposing the OpenAI-style route `/v1/audio/transcriptions` with a small English model and Metal acceleration. Note: the `/inference` route is not the one you want, it 404s on the OpenAI client path.
+1. A whisper.cpp server on port 2022 exposing the OpenAI-style route `/v1/audio/transcriptions` with a small English model and whatever acceleration my machine offers (Metal on a Mac, CUDA on Nvidia, plain CPU works). Note: the `/inference` route is not the one you want, it 404s on the OpenAI client path.
 2. A Kokoro TTS server on port 8880 exposing `/v1/audio/speech` (kokoro-fastapi works well). Request `response_format: pcm`, which returns raw int16 at 24kHz mono. Pick a voice you like, `bm_lewis` is a good default.
 
 ## Hold-to-talk (the default mode)
 
 - Global key listener via pynput. Holding the chosen key opens the mic, releasing closes it with a 0.18 second tail so my last word survives.
 - Taps shorter than 250ms are ignored.
-- CRITICAL: macOS fires key-repeat on_press events continuously while a key is held. Filter with a held-state flag or every repeat becomes a fresh press. This bug will kill every reply before it speaks if you skip it.
+- CRITICAL: the OS fires key-repeat on_press events continuously while a key is held. Filter with a held-state flag or every repeat becomes a fresh press. This bug will kill every reply before it speaks if you skip it.
 - Pressing the key while the assistant is talking interrupts playback immediately. This makes it speaker-safe with no headphones.
 - The mic is fully closed between holds so room audio and music never leak into the transcriber.
-- Needs Input Monitoring permission for the hosting terminal, and mic permission comes from launching in Terminal, not launchd. Never run this as a background daemon. Nobody wants a 24/7 open mic.
+- On macOS this needs Input Monitoring permission for the hosting terminal, and mic permission comes from launching in Terminal, not launchd; other systems have their own input and mic permission hoops, clear them the same way. Whatever the OS, never run this as a background daemon. Nobody wants a 24/7 open mic.
 
 Also build a legacy open-mic mode behind an `--open-mic` flag: webrtcvad endpointing, discard any utterance with less than 240ms of actual speech, and strip bracketed non-speech markers like [SIGHS] and [BLANK_AUDIO] that whisper emits.
 
@@ -78,7 +80,7 @@ Typing in the voice terminal is a real turn: a background reader feeds typed lin
 
 ## Spotify ducking (optional but great)
 
-While the assistant speaks, if Spotify is playing above volume 30, drop it to max(30, current x 0.6) via AppleScript. Restore with a 1.2 second debounce so back-to-back sentence chunks do not yo-yo the volume. Never launch Spotify if it is not running.
+While the assistant speaks, if Spotify is playing above volume 30, drop it to max(30, current x 0.6), via AppleScript on a Mac or my OS's equivalent hook (skip this section if there is no clean one). Restore with a 1.2 second debounce so back-to-back sentence chunks do not yo-yo the volume. Never launch Spotify if it is not running.
 
 ## The signal bus (for the visualizer)
 

@@ -1,10 +1,10 @@
 # The Visualizer
 
-Paste this whole prompt into Claude Code on a Mac. Your agent builds a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: mine is a living circuit board where the voice is the current running through it, but the same engine can drive anything you can describe. Built to pair with The Voice Line prompt, and it ships with a mock mode so you can build and enjoy it standalone. The movie flythrough from my demo video is its own add-on, The Cinematic Camera prompt below.
+Paste this whole prompt into Claude Code. Your agent builds a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: mine is a living circuit board where the voice is the current running through it, but the same engine can drive anything you can describe. Built to pair with The Voice Line prompt, and it ships with a mock mode so you can build and enjoy it standalone. The movie flythrough from my demo video is its own add-on, The Cinematic Camera prompt below.
 
 ---
 
-I want you to build me a stream visualizer: a fullscreen browser scene that reacts to a voice assistant through a small local server. The engine spec below is proven. The scene that runs on it is mine to choose.
+I want you to build me a stream visualizer: a fullscreen browser scene that reacts to a voice assistant through a small local server. The engine spec below is proven. The scene that runs on it is mine to choose. I might be on macOS, Windows, or Linux: translate anything platform-specific (the launcher, paths, browser flags) to MY system.
 
 ## The scene is my choice. Ask me first.
 
@@ -25,8 +25,8 @@ Once I pick, propose how MY scene will express each of the five states below, an
 Create the project at `~/voice-visualizer/`:
 
 - `index.html` the entire scene. One self-contained file: plain canvas 2D and vanilla JS, no frameworks, no CDN, no build step, works offline. Prefer drawing everything procedurally so nothing external is required.
-- `server.py` a tiny Python 3 server, standard library only, no packages, no environment to manage. The python3 already on the Mac is fine.
-- `Visualizer.command` a double-click launcher.
+- `server.py` a tiny Python 3 server, standard library only, no packages, no environment to manage. Whatever python3 is already on the machine is fine.
+- A double-click launcher for my OS (a `.command` file on a Mac, a `.bat` on Windows, a shell script or desktop entry on Linux).
 - `assets/` only if the scene truly needs an image. If my scene uses a portrait or image, the loader must crop to content and normalize so ANY swapped image works. If I do not provide assets, generate placeholders and tell me how to swap them.
 
 ## The server (the only bridge to the voice line)
@@ -43,7 +43,7 @@ The page polls `/state` about 10 times a second and smooths everything client-si
 
 ## The launcher
 
-`Visualizer.command`: if port 8777 is not answering, start `server.py` in the background (log to /tmp), then open a Chrome kiosk at the localhost address with a fresh throwaway `--user-data-dir` profile so no tabs or extensions ride along. If Chrome is missing, open the default browser and tell me to go fullscreen. Cmd+Q closes the kiosk; the server stays warm.
+The launcher: if port 8777 is not answering, start `server.py` in the background (log to a temp folder), then open a Chrome kiosk at the localhost address with a fresh throwaway `--user-data-dir` profile so no tabs or extensions ride along. If Chrome is missing, open the default browser and tell me to go fullscreen. Quitting the kiosk the normal way for my OS leaves the server warm.
 
 ## Details that make it feel right
 

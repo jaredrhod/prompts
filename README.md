@@ -8,7 +8,7 @@ The pretty version with copy buttons lives at [jaredrhod.com/prompts](https://ja
 
 ## How to use
 
-1. Open Claude Code on a Mac.
+1. Open Claude Code on your computer (Mac, Windows, or Linux).
 2. Copy the whole prompt file and paste it in.
 3. Let it build. Your agent installs what it needs, writes the code, and verifies it works before handing it to you.
 
