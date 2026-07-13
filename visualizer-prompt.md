@@ -1,6 +1,6 @@
 # The Visualizer
 
-Paste this whole prompt into Claude Code on a Mac. Your agent builds a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: mine is a living circuit board where the voice is the current running through it, but the same engine can drive anything you can describe. Built to pair with The Voice Line prompt, and it ships with a mock mode so you can build and enjoy it standalone.
+Paste this whole prompt into Claude Code on a Mac. Your agent builds a fullscreen visual that reacts to your voice agent as it listens, thinks, and speaks. You pick the scene: mine is a living circuit board where the voice is the current running through it, but the same engine can drive anything you can describe. Built to pair with The Voice Line prompt, and it ships with a mock mode so you can build and enjoy it standalone. The movie flythrough from my demo video is its own add-on, The Cinematic Camera prompt below.
 
 ---
 
