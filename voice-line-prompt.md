@@ -1,6 +1,6 @@
 # The Voice Line
 
-Paste this whole prompt into Claude Code on a Mac. Your agent builds a voice conversation system: hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
+Paste this whole prompt into Claude Code on a Mac. Your agent builds a voice conversation system: hold a key, talk to your agent out loud, release, and it answers through your speakers in a real voice. Type instead whenever you want, same conversation. Everything runs local, $0 on a Claude subscription, and your agent will offer you a choice: the free local voice, or any voice you like from ElevenLabs if you want the premium sound.
 
 ---
 
@@ -72,13 +72,17 @@ Also build a legacy open-mic mode behind an `--open-mic` flag: webrtcvad endpoin
 - ElevenLabs path, hard-won audio doctrine: fetch mp3_44100_128 and decode locally with ffmpeg (raw PCM at 44.1k needs their Pro tier, and the mp3 decode hides inside network wait). Use the turbo model with stability 0.5 and similarity 0.75. Do not use the multilingual model for English and do not set style above 0, both make delivery slow and dull. Their website voice previews are mastered demo clips, raw API output never matches them, so master locally with an ffmpeg chain: presence boost around 3.2kHz, a little low shelf around 140Hz, gentle compression, a limiter.
 - While audio is playing, feed the signal bus (below) with each PCM block.
 
+## Typed input (first-class, not a side channel)
+
+Typing in the voice terminal is a real turn: a background reader feeds typed lines into the exact same handler as speech, so the reply is spoken aloud, typing while it talks interrupts playback, and the quit phrases work typed. Two hard-won rules. First, race the typed queue against the key listener with asyncio.wait FIRST_COMPLETED and keep unfinished futures alive across iterations. Second, take the terminal raw (cbreak, kernel echo off, restore on exit) and run your own tiny line editor, because canonical mode cannot host paste-aware input: assemble bracketed pastes invisibly into ONE message no matter their shape, scrub gutter glyphs and hard wraps out of pasted text, and echo a long paste as a character count instead of the text.
+
 ## Spotify ducking (optional but great)
 
 While the assistant speaks, if Spotify is playing above volume 30, drop it to max(30, current x 0.6) via AppleScript. Restore with a 1.2 second debounce so back-to-back sentence chunks do not yo-yo the volume. Never launch Spotify if it is not running.
 
 ## The signal bus (for the visualizer)
 
-Write these files in the project root so a separate visualizer process can watch them. All writes wrapped in try/except, the bus must never crash the voice line:
+Write these files in the project root so a separate visualizer can watch them. My visualizer prompt builds a browser scene that reads this bus through its own small read-only server, but the contract is just files, so anything can watch them. Your only job is to write them, all writes wrapped in try/except, the bus must never crash the voice line. (One file you never write: `.voice_alert`. That one belongs to any OTHER process on the machine that wants the visualizer's attention.)
 
 - `.voice_state` plain text, one of: idle, listening, thinking, speaking
 - `.voice_waveform` JSON `{"ts": <unix float>, "samples": [64 floats]}`, written at most 15 times per second while audio plays. Downsample each PCM block to 64 points, raw int16 magnitudes are fine.
